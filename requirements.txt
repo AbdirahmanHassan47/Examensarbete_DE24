@@ -1,0 +1,15 @@
+# Data ingestion
+dlt
+requests
+
+# Data warehouse client
+snowflake-connector-python
+
+# dbt
+dbt-core
+dbt-snowflake
+
+# Dashboard
+streamlit
+pandas
+plotly

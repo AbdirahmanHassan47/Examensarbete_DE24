@@ -1,0 +1,21 @@
+name: "sl_analytics_dbt"
+version: "1.0.0"
+config-version: 2
+
+profile: "sl_analytics_dbt"
+
+models:
+  sl_analytics_dbt:
+    +materialized: table
+
+    staging:
+      +schema: staging
+      +materialized: view
+
+    warehouse:
+      +schema: warehouse
+      +materialized: table
+
+    mart:
+      +schema: mart
+      +materialized: table

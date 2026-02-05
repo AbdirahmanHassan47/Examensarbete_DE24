@@ -3,3 +3,10 @@ version: 2
 models:
   - name: sl_departures_mart
     description: "Daily departures count by site"
+    columns:
+      - name: _site_id
+        tests:
+          - not_null
+      - name: ingested_date
+        tests:
+          - not_null

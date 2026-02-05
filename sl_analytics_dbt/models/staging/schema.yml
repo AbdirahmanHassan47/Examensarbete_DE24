@@ -11,3 +11,10 @@ sources:
 models:
   - name: stg_sl_departures
     description: "Staging view over raw SL departures"
+    columns:
+      - name: _site_id
+        tests:
+          - not_null
+      - name: _ingested_at
+        tests:
+          - not_null

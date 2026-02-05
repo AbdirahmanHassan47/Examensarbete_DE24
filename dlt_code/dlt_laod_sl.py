@@ -23,10 +23,10 @@ def sl_departures_resource(site_ids: list[int]):
     for site_id in site_ids:
         data = _get_departures_for_site(site_id)
 
-        # du får anpassa flatten beroende på exakt JSON-struktur
+        
         departures = data.get("departures", [])
         for dep in departures:
-            # enrich med metadata
+            
             dep["_site_id"] = site_id
             dep["_ingested_at"] = datetime.utcnow().isoformat()
             yield dep
@@ -36,12 +36,12 @@ def run_pipeline(table_name: str = "sl_departures_raw"):
     pipeline = dlt.pipeline(
         pipeline_name="sl_departures",
         destination="snowflake",
-        dataset_name="staging",   # schema TRAFIK_DATA.STAGING
+        dataset_name="staging",   
     )
 
     site_ids = [
-        9192,  # Slussen
-        9302,  # T-centralen (exempel)
+        9192,  
+        9302,  
     ]
 
     load_info = pipeline.run(
@@ -53,7 +53,7 @@ def run_pipeline(table_name: str = "sl_departures_raw"):
 
 
 if __name__ == "__main__":
-    # se till att jobba i samma dir som scriptet (så .dlt/ hittas)
+    
     workdir = Path(__file__).parent
     os.chdir(workdir)
     run_pipeline()

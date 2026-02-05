@@ -3,11 +3,9 @@ dlt
 requests
 
 # Data warehouse client
-snowflake-connector-python
-
-# dbt
-dbt-core
-dbt-snowflake
+snowflake-connector-python>=3.16.0,<4.0.0
+dbt-core>=1.10.0
+dbt-snowflake>=1.10.3
 
 # Dashboard
 streamlit

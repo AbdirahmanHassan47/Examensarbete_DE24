@@ -7,4 +7,4 @@ CREATE ROLE IF NOT EXISTS BI_ROLE;
 
 
 
-
+use role ETL_DLT_ROLE

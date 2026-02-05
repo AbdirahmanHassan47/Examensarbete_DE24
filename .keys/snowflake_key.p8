@@ -1,9 +1,4 @@
-[destination.snowflake.credentials]
-database = "TRAFIK_DATA"
-username = "ABDIRAHMANHASSAN47"
-host = "FMVXUQS-IF87024"
-
-private_key = """-----BEGIN PRIVATE KEY-----
+-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC9CqZu/O0dCNWL
 VGJC8r5ViZMaHclF25lvVZ//ky1d3v09bZ8IzaW/UI9zYhN2BDY3GlHJ5BlKxKUh
 dD3amLzEDyJCFp07+hI6SFBb+AWQbsov5hoZuthtbht+74snVXo6EBv2KZF5vlEt
@@ -30,4 +25,4 @@ LeA1WTZwQy2MUYml2AJtNmxVN1A+LzajICAjWTu5AoGAIzdcT7LUVRyJYQK1MNSc
 7fgLT21yqzx7TV0MTu2aq9xN8jGAeDCk/cmTGvrf0mIquySKKVeYcCqo7ps/alA7
 x0MvX1pkaP6ZiAxxuSYP04vNmLLfsxOxUIids8MWzvw1qFAt/CG61pcQZvE3mQ5Z
 QK+Xl8oDWcTkBubf4IP/XFU=
------END PRIVATE KEY-----"""
+-----END PRIVATE KEY-----

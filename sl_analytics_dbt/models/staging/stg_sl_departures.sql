@@ -5,5 +5,5 @@ with source as (
 
 select
     *,
-    try_to_timestamp_ntz(_ingested_at) as ingested_at_ts
+    convert_timezone('UTC', _ingested_at)::timestamp_ntz as ingested_at_ts
 from source

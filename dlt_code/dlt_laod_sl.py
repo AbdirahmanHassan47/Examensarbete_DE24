@@ -1,6 +1,6 @@
 import dlt
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 import os
 
@@ -28,7 +28,7 @@ def sl_departures_resource(site_ids: list[int]):
         for dep in departures:
             
             dep["_site_id"] = site_id
-            dep["_ingested_at"] = datetime.utcnow().isoformat()
+            dep["_ingested_at"] = datetime.now(timezone.utc).isoformat()
             yield dep
 
 

@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: fct_sl_departures
+    description: "Fact table with basic derived fields from SL departures"

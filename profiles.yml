@@ -1,0 +1,14 @@
+sl_analytics_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "FMVXUQS-IF87024"
+      user: "ABDIRAHMANHASSAN47"
+      role: "PUBLIC"
+      warehouse: "TRAFIK_WH"
+      database: "TRAFIK_DATA"
+      schema: "STAGING"
+      threads: 4
+      client_session_keep_alive: False
+      private_key_path: "C:/Users/Abdirahman/Documents/github/Examensarbete_DE24/.keys/snowflake_key.p8"

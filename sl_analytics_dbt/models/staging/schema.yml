@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: sl
+    database: TRAFIK_DATA
+    schema: STAGING
+    tables:
+      - name: sl_departures_raw
+        description: "Raw SL departures loaded by dlt"
+
+models:
+  - name: stg_sl_departures
+    description: "Staging view over raw SL departures"

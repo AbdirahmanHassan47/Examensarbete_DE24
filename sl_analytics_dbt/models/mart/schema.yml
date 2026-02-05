@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: sl_departures_mart
+    description: "Daily departures count by site"

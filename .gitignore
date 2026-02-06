@@ -211,3 +211,5 @@ __marimo__/
 keys/
 .streamlit/secrets.toml
 sl_analytics_dbt/.streamlit/secrets.toml
+data/gtfs_static/
+*.zip

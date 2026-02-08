@@ -10,3 +10,5 @@ models:
       - name: ingested_date
         tests:
           - not_null
+  - name: sl_departures_with_stops
+    description: "Realtime departures enriched with GTFS metro stop metadata"

@@ -7,6 +7,18 @@ sources:
     tables:
       - name: sl_departures_raw
         description: "Raw SL departures loaded by dlt"
+  - name: gtfs_static
+    database: TRAFIK_DATA
+    schema: STATIC
+    tables:
+      - name: metro_routes
+        description: "GTFS metro routes (SL) loaded by dlt"
+      - name: metro_trips
+        description: "GTFS metro trips (SL) loaded by dlt"
+      - name: metro_stop_times
+        description: "GTFS metro stop_times (SL) loaded by dlt"
+      - name: metro_stops
+        description: "GTFS metro stops (SL) loaded by dlt"
 
 models:
   - name: stg_sl_departures
@@ -18,3 +30,11 @@ models:
       - name: _ingested_at
         tests:
           - not_null
+  - name: stg_metro_routes
+    description: "Staging view for GTFS metro routes"
+  - name: stg_metro_trips
+    description: "Staging view for GTFS metro trips"
+  - name: stg_metro_stop_times
+    description: "Staging view for GTFS metro stop_times"
+  - name: stg_metro_stops
+    description: "Staging view for GTFS metro stops"

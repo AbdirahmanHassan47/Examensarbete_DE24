@@ -3,3 +3,9 @@ version: 2
 models:
   - name: fct_sl_departures
     description: "Fact table with basic derived fields from SL departures"
+  - name: dim_metro_stops
+    description: "Dimension table for GTFS metro stops"
+    columns:
+      - name: stop_id
+        tests:
+          - not_null

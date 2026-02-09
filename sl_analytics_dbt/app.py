@@ -104,7 +104,7 @@ def layout():
     )
     where_sql = "where " + " and ".join(filters) if filters else ""
 
-    tabs = st.tabs(["Översikt", "Stationer", "Linjer", "Tidtabell"])
+    tabs = st.tabs(["Översikt", "Stationer", "Linjer"])
 
     with tabs[0]:
         st.markdown("## Översikt")
@@ -239,33 +239,6 @@ def layout():
 
         st.markdown("### Förseningsanalys")
         st.info("Realtidsförseningar ingår inte enligt avgränsningarna (endast historisk data).")
-
-    with tabs[3]:
-        st.markdown("## Tidtabell")
-        if not has_station_col:
-            st.warning(
-                "MART_TIMETABLE saknar kolumnen STATION. Kör:\n"
-                "dbt run --select mart_timetable --full-refresh"
-            )
-            return
-        rows, cols = query_df(
-            f"""
-            {service_cte(db, calendar_schema, date_str, day_col) if use_calendar else ""}
-            select
-                line,
-                station,
-                departure_time as planned_departure,
-                arrival_time as planned_arrival,
-                stop_sequence
-            from {timetable} t
-            {service_join(use_calendar)}
-            {where_sql}
-            order by line, station, try_to_time(departure_time)
-            limit 200
-            """
-        )
-        st.dataframe(_to_df(rows, cols), width="stretch")
-
 
 if __name__ == "__main__":
     layout()

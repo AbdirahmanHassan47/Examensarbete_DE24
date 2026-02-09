@@ -98,6 +98,26 @@ def metro_stops(zf: zipfile.ZipFile, stop_ids: set[str]):
             yield row
 
 
+@dlt.resource(write_disposition="replace")
+def metro_calendar(zf: zipfile.ZipFile):
+    # Optional file in GTFS
+    if "calendar.txt" not in zf.namelist():
+        return
+    for row in _load_csv(zf, "calendar.txt"):
+        row["_operator"] = OPERATOR
+        yield row
+
+
+@dlt.resource(write_disposition="replace")
+def metro_calendar_dates(zf: zipfile.ZipFile):
+    # Optional file in GTFS
+    if "calendar_dates.txt" not in zf.namelist():
+        return
+    for row in _load_csv(zf, "calendar_dates.txt"):
+        row["_operator"] = OPERATOR
+        yield row
+
+
 def run_pipeline():
     data_dir = Path(__file__).resolve().parents[1] / "data" / "gtfs_static"
     zip_path = data_dir / f"{OPERATOR}.zip"
@@ -129,6 +149,8 @@ def run_pipeline():
                 metro_trips(zf, route_ids).with_name("metro_trips"),
                 metro_stop_times(zf, trip_ids).with_name("metro_stop_times"),
                 metro_stops(zf, stop_ids).with_name("metro_stops"),
+                metro_calendar(zf).with_name("metro_calendar"),
+                metro_calendar_dates(zf).with_name("metro_calendar_dates"),
             ],
         )
         print(load_info)

@@ -1,12 +1,6 @@
 version: 2
 
 sources:
-  - name: sl
-    database: TRAFIK_DATA
-    schema: STAGING
-    tables:
-      - name: sl_departures_raw
-        description: "Raw SL departures loaded by dlt"
   - name: gtfs_static
     database: TRAFIK_DATA
     schema: STATIC
@@ -21,15 +15,6 @@ sources:
         description: "GTFS metro stops (SL) loaded by dlt"
 
 models:
-  - name: stg_sl_departures
-    description: "Staging view over raw SL departures"
-    columns:
-      - name: _site_id
-        tests:
-          - not_null
-      - name: _ingested_at
-        tests:
-          - not_null
   - name: stg_metro_routes
     description: "Staging view for GTFS metro routes"
   - name: stg_metro_trips

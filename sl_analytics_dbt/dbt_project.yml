@@ -4,6 +4,8 @@ config-version: 2
 
 profile: "sl_analytics_dbt"
 
+model-paths: ["model"]
+
 models:
   sl_analytics_dbt:
     +materialized: table

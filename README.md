@@ -42,7 +42,7 @@ Setup:
    `pip install -r requirements.txt`
 3. Configure dlt secrets in `dlt_code/.dlt/secrets.toml`
 4. Run ingestion:
-   `python dlt_code/dlt_laod_sl.py`
+   `python dlt_code/gtfs_static_sl.py`
 5. Configure dbt profile in `C:\Users\Abdirahman\.dbt\profiles.yml`
 6. Run dbt:
    `dbt run`

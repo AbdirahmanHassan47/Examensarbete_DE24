@@ -74,6 +74,8 @@ docs/_build/
 # PyBuilder
 .pybuilder/
 target/
+sl_analytics_dbt/target/
+sl_analytics_dbt/logs/
 
 # Jupyter Notebook
 .ipynb_checkpoints

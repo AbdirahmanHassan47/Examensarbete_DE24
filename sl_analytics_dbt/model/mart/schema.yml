@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: mart_metro_overview
+    description: "Overview counts for metro GTFS static data"
+  - name: mart_station_departures
+    description: "Planned departures per station and line"
+  - name: mart_line_stats
+    description: "Stops and trips per metro line"
+  - name: mart_timetable
+    description: "Planned timetable by line and station"

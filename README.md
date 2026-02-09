@@ -1,33 +1,43 @@
 # SL Analytics Data Warehouse
 
 ## Project Overview
-This project implements a modern data stack to analyze SL public transport departures. The system automates extraction, loading, transformation, and visualization to support data-driven insights.
+This project implements a modern data stack to analyze **SL Metro (Tunnelbana)** using **GTFS static data**. The system is batch-based (historical), focused on metro only, and provides a clean dashboard for planning and analysis.
 
 ## Architecture
-SL API -> dlt -> Snowflake -> dbt -> Streamlit
+SL GTFS API -> dlt -> Snowflake -> dbt -> Streamlit
 
 Components:
-- Data source: SL Transport API
+- Data source: Trafiklab SL GTFS Static
 - Ingestion: dlt
 - Warehouse: Snowflake
 - Transformation: dbt
 - Analytics: Streamlit dashboard
 
+## Scope / Limitations
+- Only metro (tunnelbana) data is analyzed
+- Historical/batch data only (no realtime)
+- No predictive modeling (focus is a stable platform)
+
 ## Data Model
-Staging:
-- `stg_sl_departures` (view)
+**Staging (views)**
+- `stg_metro_routes`
+- `stg_metro_trips`
+- `stg_metro_stop_times`
+- `stg_metro_stops`
 
-Warehouse:
-- `fct_sl_departures` (table)
+**Warehouse (tables)**
+- `dim_metro_stops`
 
-Mart:
-- `sl_departures_mart` (table, daily counts by site)
+**Mart (tables)**
+- `mart_metro_overview`
+- `mart_station_departures`
+- `mart_line_stats`
+- `mart_timetable` (optional, can be removed from dashboard)
 
 ## Repository Structure
-- `dlt_code/` ingestion scripts
-- `sl_analytics_dbt/` dbt project
-- `projekt_sl_analytics/` Streamlit app
-- `worksheets_sql/` SQL helpers and exploration queries
+- `dlt_code/` ingestion scripts (GTFS static)
+- `sl_analytics_dbt/` dbt project + Streamlit app
+- `worsheet_sql/` SQL helpers and exploration queries
 - `requirements.txt`
 
 ## Getting Started
@@ -41,12 +51,19 @@ Setup:
 2. Install dependencies:
    `pip install -r requirements.txt`
 3. Configure dlt secrets in `dlt_code/.dlt/secrets.toml`
-4. Run ingestion:
+4. Add API key in `.env`:
+   `API_KEY=your_tarfiklab_key`
+5. Run ingestion:
    `python dlt_code/gtfs_static_sl.py`
-5. Configure dbt profile in `C:\Users\Abdirahman\.dbt\profiles.yml`
-6. Run dbt:
+6. Configure dbt profile in `C:\Users\.dbt\profiles.yml`
+7. Run dbt:
    `dbt run`
    `dbt test`
-7. Run Streamlit:
-   `streamlit run projekt_sl_analytics/app.py`
+8. Run Streamlit (from dbt folder):
+   `cd sl_analytics_dbt`
+   `python -m streamlit run app.py`
+
+## Notes
+- If calendar tables are missing in GTFS, the dashboard will show totals for the full dataset.
+- For consistent filters and line colors, ensure marts are up to date by running `dbt run`.
 

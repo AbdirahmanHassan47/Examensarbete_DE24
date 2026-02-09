@@ -38,12 +38,17 @@ def layout():
         rows, cols = query_df(
             f"""
             select distinct
-                coalesce(route_short_name, route_long_name) as line,
-                route_long_name as line_name
+                route_short_name as line,
+                route_long_name as line_name,
+                try_to_number(route_short_name) as line_number,
+                case
+                    when lower(route_long_name) like '%röda%' then 'Red'
+                    when lower(route_long_name) like '%gröna%' then 'Green'
+                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    else null
+                end as line_color
             from {line_stats}
-            order by
-                try_to_number(coalesce(route_short_name, route_long_name)),
-                line
+            order by line_number, line
             """
         )
         lines_df = _to_df(rows, cols)
@@ -56,7 +61,7 @@ def layout():
         line_choice = st.selectbox("Linje", ["All"] + line_labels)
 
         rows, cols = query_df(
-            f"select distinct stop_name as station from {station_departures} order by station"
+            f"select distinct stop_name as station from {station_departures} order by 1"
         )
         stations_df = _to_df(rows, cols)
         stations = stations_df["STATION"].tolist() if not stations_df.empty else []
@@ -132,7 +137,15 @@ def layout():
         st.markdown("### Mest belastade stationer")
         rows, cols = query_df(
             f"""
-            select stop_name as station, planned_departures
+            select
+                stop_name as station,
+                case
+                    when lower(route_long_name) like '%röda%' then 'Red'
+                    when lower(route_long_name) like '%gröna%' then 'Green'
+                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    else null
+                end as line_color,
+                planned_departures
             from {station_departures}
             {"where " if (station_choice != "All" or line_value) else ""}
             {("stop_name = '" + station_choice + "'") if station_choice != "All" else ""}
@@ -170,7 +183,15 @@ def layout():
         st.markdown("## Stationer")
         rows, cols = query_df(
             f"""
-            select stop_name as station, planned_departures
+            select
+                stop_name as station,
+                case
+                    when lower(route_long_name) like '%röda%' then 'Red'
+                    when lower(route_long_name) like '%gröna%' then 'Green'
+                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    else null
+                end as line_color,
+                planned_departures
             from {station_departures}
             {"where " if (station_choice != "All" or line_value) else ""}
             {("stop_name = '" + station_choice + "'") if station_choice != "All" else ""}
@@ -189,7 +210,13 @@ def layout():
         rows, cols = query_df(
             f"""
             select
-                coalesce(route_short_name, route_long_name) as line,
+                route_short_name as line,
+                case
+                    when lower(route_long_name) like '%röda%' then 'Red'
+                    when lower(route_long_name) like '%gröna%' then 'Green'
+                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    else null
+                end as line_color,
                 stops_count as stations_count,
                 stop_times_count as planned_departures
             from {line_stats}
@@ -198,11 +225,13 @@ def layout():
         )
         line_stats_df = _to_df(rows, cols)
         if not line_stats_df.empty:
+            color_map = {"Red": "#D11F2F", "Green": "#00985F", "Blue": "#0069B4"}
             fig = px.bar(
                 line_stats_df,
                 x="LINE",
                 y="PLANNED_DEPARTURES",
-                color="LINE",
+                color="LINE_COLOR",
+                color_discrete_map=color_map,
                 title=None,
             )
             st.plotly_chart(fig, width="stretch")

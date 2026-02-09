@@ -14,6 +14,13 @@ routes as (
 select
     routes.route_short_name as line,
     routes.route_long_name as line_name,
+    try_to_number(routes.route_short_name) as line_number,
+    case
+        when lower(routes.route_long_name) like '%röda%' then 'Red'
+        when lower(routes.route_long_name) like '%gröna%' then 'Green'
+        when lower(routes.route_long_name) like '%blå%' then 'Blue'
+        else null
+    end as line_color,
     routes.route_id,
     trips.service_id,
     stops.stop_name as station,

@@ -60,9 +60,14 @@ def layout():
         line_labels = lines_df["LABEL"].tolist() if not lines_df.empty else []
         line_choice = st.selectbox("Linje", ["All"] + line_labels)
 
-        rows, cols = query_df(
-            f"select distinct stop_name as station from {station_departures} order by 1"
-        )
+        if has_station_col:
+            rows, cols = query_df(
+                f"select distinct station from {timetable} order by 1"
+            )
+        else:
+            rows, cols = query_df(
+                f"select distinct stop_name as station from {station_departures} order by 1"
+            )
         stations_df = _to_df(rows, cols)
         stations = stations_df["STATION"].tolist() if not stations_df.empty else []
         station_choice = st.selectbox("Station", ["All"] + stations)
@@ -110,6 +115,12 @@ def layout():
         st.markdown("## Översikt")
         if not use_calendar:
             st.info("Kalendertabeller saknas. Visar totalsiffror för hela datasetet.")
+        else:
+            st.caption("Datumfiltret gäller hela dygnet (00–23) för det valda datumet.")
+        st.caption(
+            "Planned departures = planerade avgångar enligt tidtabellen (GTFS static), "
+            "inte faktiska avgångar."
+        )
 
         rows, cols = query_df(
             f"""
@@ -135,22 +146,26 @@ def layout():
             st.warning("Ingen data för valt datum. Välj ett datum inom kalenderns giltighet.")
 
         st.markdown("### Mest belastade stationer")
+        st.caption(
+            "Stationer kan förekomma flera gånger i rådata (flera avgångar). "
+            "Här summeras de till totalt antal planerade avgångar."
+        )
         rows, cols = query_df(
             f"""
+            {service_cte(db, calendar_schema, date_str, day_col) if use_calendar else ""}
             select
-                stop_name as station,
+                t.station as station,
                 case
-                    when lower(route_long_name) like '%röda%' then 'Red'
-                    when lower(route_long_name) like '%gröna%' then 'Green'
-                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    when lower(t.line_name) like '%röda%' then 'Red'
+                    when lower(t.line_name) like '%gröna%' then 'Green'
+                    when lower(t.line_name) like '%blå%' then 'Blue'
                     else null
                 end as line_color,
-                planned_departures
-            from {station_departures}
-            {"where " if (station_choice != "All" or line_value) else ""}
-            {("stop_name = '" + station_choice + "'") if station_choice != "All" else ""}
-            {(" and " if (station_choice != "All" and line_value) else "")}
-            {("coalesce(route_short_name, route_long_name) = '" + line_value + "'") if line_value else ""}
+                count(*) as planned_departures
+            from {timetable} t
+            {service_join(use_calendar)}
+            {where_sql}
+            group by t.station, line_color
             order by planned_departures desc
             limit 15
             """
@@ -183,20 +198,20 @@ def layout():
         st.markdown("## Stationer")
         rows, cols = query_df(
             f"""
+            {service_cte(db, calendar_schema, date_str, day_col) if use_calendar else ""}
             select
-                stop_name as station,
+                t.station as station,
                 case
-                    when lower(route_long_name) like '%röda%' then 'Red'
-                    when lower(route_long_name) like '%gröna%' then 'Green'
-                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    when lower(t.line_name) like '%röda%' then 'Red'
+                    when lower(t.line_name) like '%gröna%' then 'Green'
+                    when lower(t.line_name) like '%blå%' then 'Blue'
                     else null
                 end as line_color,
-                planned_departures
-            from {station_departures}
-            {"where " if (station_choice != "All" or line_value) else ""}
-            {("stop_name = '" + station_choice + "'") if station_choice != "All" else ""}
-            {(" and " if (station_choice != "All" and line_value) else "")}
-            {("coalesce(route_short_name, route_long_name) = '" + line_value + "'") if line_value else ""}
+                count(*) as planned_departures
+            from {timetable} t
+            {service_join(use_calendar)}
+            {where_sql}
+            group by t.station, line_color
             order by planned_departures desc
             """
         )

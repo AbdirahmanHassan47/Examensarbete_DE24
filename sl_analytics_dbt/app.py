@@ -224,17 +224,21 @@ def layout():
         st.markdown("## Linjer")
         rows, cols = query_df(
             f"""
+            {service_cte(db, calendar_schema, date_str, day_col) if use_calendar else ""}
             select
-                route_short_name as line,
+                t.line as line,
                 case
-                    when lower(route_long_name) like '%röda%' then 'Red'
-                    when lower(route_long_name) like '%gröna%' then 'Green'
-                    when lower(route_long_name) like '%blå%' then 'Blue'
+                    when lower(t.line_name) like '%röda%' then 'Red'
+                    when lower(t.line_name) like '%gröna%' then 'Green'
+                    when lower(t.line_name) like '%blå%' then 'Blue'
                     else null
                 end as line_color,
-                stops_count as stations_count,
-                stop_times_count as planned_departures
-            from {line_stats}
+                count(distinct t.station) as stations_count,
+                count(*) as planned_departures
+            from {timetable} t
+            {service_join(use_calendar)}
+            {where_sql}
+            group by t.line, line_color
             order by planned_departures desc
             """
         )
